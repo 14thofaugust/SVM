@@ -1,4 +1,3 @@
-# All kernels should go here
 import numpy, math
 
 def linearKernel(vec1, vec2):
