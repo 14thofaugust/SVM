@@ -36,6 +36,25 @@ def callqp(P, q, G, h):
 	return alpha
    
 
+def buildIndList(data, alpha, tol=0.00001):
+    N = 0
+    for i in range(len(data)):
+        if alpha[i] > tol:
+            N += 1
+    print('Non zero alphas: ', N)
+
+    indList = np.zeros((N,4))
+    i = 0
+    for j in range(len(data)):
+        if alpha[j] > tol:
+            indList[i][0] = data[j][0]
+            indList[i][1] = data[j][1]
+            indList[i][2] = data[j][2]
+            indList[i][3] = alpha[j]
+            i += 1
+    return(indList)
+    #ca retourne (x, y, t, alpha)
+
 def indicator(x, y, indList):
     point = np.array((x,y))
     N = len(indList)
@@ -44,8 +63,8 @@ def indicator(x, y, indList):
         x_i     = np.array((indList[i][0], indList[i][1]))
         ind_x   += indList[i][3]*indList[i][2]*linearKernel(point, x_i)
     #indication = 0.0
-    #indication += -1.0 * (ind_x <= -1.0) + 1.0 * (1.0 <= ind_x)
-    return ind_x
+    #indication += -1.0*(ind_x <= -1.0) + 1.0*(1.0 <= ind_x)
+    return (ind_x)
 
 
 
