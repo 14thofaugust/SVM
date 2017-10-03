@@ -97,10 +97,10 @@ def plotTestData(classA, classB):
     #pylab.show()
 
 
-def plotContour(indList, kernArg):
+def plotContour(indList):
     xRange  = np.arange(-4,4,0.1)
     yRange  = np.arange(-4,4,0.1)
-    grid    = matrix([[indicator(x,y, indList, kernArg)
+    grid    = matrix([[indicator(x,y, indList)
                 for y in yRange]
                 for x in xRange])
 
