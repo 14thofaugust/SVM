@@ -32,17 +32,76 @@ def q_G_h(N):
 
 def callqp(P, q, G, h):
 	r = qp(matrix(P) , matrix(q) , matrix(G) , matrix(h))
-	return (alpha = list(r["x"]))
+	alpha = list(r['x'])
+	return alpha
    
+
+def indicator(x, y, indList):
+    point = np.array((x,y))
+    N = len(indList)
+    ind_x = 0.0
+    for i in range(N):
+        x_i     = np.array((indList[i][0], indList[i][1]))
+        ind_x   += indList[i][3]*indList[i][2]*linearKernel(point, x_i)
+    #indication = 0.0
+    #indication += -1.0 * (ind_x <= -1.0) + 1.0 * (1.0 <= ind_x)
+    return ind_x
+
+
+
+def generateTestData(dataPoints):
+    classA =[(random.normalvariate(-1.5, 0.1),
+                random.normalvariate(1.5, 0.1),
+                1.0)
+                for i in range(int(dataPoints/4))] + \
+            [(  random.normalvariate(1.5, 0.1),
+                random.normalvariate(-1.5, 0.1),
+                1.0)
+                for i in range(int(dataPoints/4))]
+
+    classB =[(  random.normalvariate(0.0, 0.5),
+                random.normalvariate(-0.5, 0.5),
+                -1.0)
+                for i in range(int(dataPoints/2))]
+    data        = classA + classB
+    random.shuffle(data)
+    return(data, classA, classB)
+
+def plotTestData(classA, classB):
+    pylab.hold(True)
+    pylab.plot( [p[0] for p in classA],
+                [p[1] for p in classA],
+                'bo')
+    pylab.plot( [p[0] for p in classB],
+                [p[1] for p in classB],
+                'ro')
+    #pylab.show()
+
+
+def plotContour(indList, kernArg):
+    xRange  = np.arange(-4,4,0.1)
+    yRange  = np.arange(-4,4,0.1)
+    grid    = matrix([[indicator(x,y, indList, kernArg)
+                for y in yRange]
+                for x in xRange])
+
+    pylab.contour(xRange, yRange, grid,
+                    (-1, 0, 1),
+                    colors=('red', 'black', 'blue'),
+                    linewidths=(1,3,1))
+    pylab.show()
+
+
+def addSlack(G, h, C, N):
+    G_slack = np.diag(np.ones(N))
+    h_slack = C * np.ones(shape=(N,1))
+    G_full  = np.concatenate((G,G_slack), axis=0)
+    h_full  = np.concatenate((h,h_slack), axis=0)
+    return(G_full, h_full)
 
 
 # Example
 
-x = [1, 2]
-y = [0, -1]
-print(linearKernel(x, y))
-print(q_G_h(3))
-callqp()
 
 
 
